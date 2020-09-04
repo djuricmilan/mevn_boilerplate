@@ -35,7 +35,7 @@ services:
             - /usr/app/node_modules
             - ./client:/usr/app
         environment:
-            - VUE_APP_API_URL=http://localhost:$NGINX_PORT/$API_URL_PREFIX
+            - VUE_APP_API_URL=http://localhost:$NGINX_PORT/api
             - PORT=$CLIENT_PORT
     nginx:
         build:
@@ -46,6 +46,7 @@ services:
         environment:
             - API_URL=api:$API_PORT
             - CLIENT_URL=client:$CLIENT_PORT
+            - PORT=$NGINX_PORT
         depends_on:
             - api
             - client

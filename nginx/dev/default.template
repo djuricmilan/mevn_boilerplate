@@ -5,6 +5,7 @@ upstream client{
     server $CLIENT_URL;
 }
 server{
+    listen $PORT;
     location / {
         proxy_pass http://client;
     }

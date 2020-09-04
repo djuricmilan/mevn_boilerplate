@@ -1,0 +1,13 @@
+FROM node as builder
+WORKDIR /usr/app
+COPY ./package.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+FROM node
+WORKDIR /usr/app
+COPY --from=builder /usr/app/package.json ./
+RUN npm install --production
+COPY --from=builder /usr/app/dist ./dist
+CMD [ "npm", "run", "prod" ]

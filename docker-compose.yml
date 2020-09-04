@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+    db:
+        image: mysql:latest
+        volumes:
+            - ./db/mysql:/var/lib/mysql
+            - ./db/init/data.sql:/docker-entrypoint-initdb.d/data.sql
+        environment:
+            - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+            - MYSQL_USER=$DB_USERNAME
+            - MYSQL_PASSWORD=$DB_PASSWORD
+            - MYSQL_DATABASE=$DB_NAME
+    api:
+        build:
+            context: ./api
+            dockerfile: Dockerfile.dev
+        volumes:
+            - /usr/app/node_modules
+            - ./api:/usr/app
+        environment:
+            - ENV_TYPE=$ENV_TYPE
+            - PORT=$API_PORT
+            - DB_TYPE=$DB_TYPE
+            - DB_HOST=$DB_HOST
+            - DB_PORT=$DB_PORT
+            - DB_USERNAME=$DB_USERNAME
+            - DB_PASSWORD=$DB_PASSWORD
+            - DB_NAME=$DB_NAME
+    client:
+        build:
+            context: ./client
+            dockerfile: Dockerfile.dev
+        volumes:
+            - /usr/app/node_modules
+            - ./client:/usr/app
+        environment:
+            - VUE_APP_API_URL=http://localhost:$NGINX_PORT/$API_URL_PREFIX
+            - PORT=$CLIENT_PORT
+    nginx:
+        build:
+            context: ./nginx/dev
+            dockerfile: Dockerfile.dev
+        ports:
+            - 80:$NGINX_PORT
+        environment:
+            - API_URL=api:$API_PORT
+            - CLIENT_URL=client:$CLIENT_PORT
+        depends_on:
+            - api
+            - client

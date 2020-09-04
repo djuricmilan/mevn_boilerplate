@@ -16,12 +16,16 @@ script:
     - docker build -t $DOCKER_USERNAME/nginx -f ./nginx/prod/Dockerfile.prod ./nginx/prod;
     - docker tag $DOCKER_USERNAME/nginx registry.heroku.app/$HEROKU_APP_NGINX/web;
 deploy:
-    docker push $DOCKER_USERNAME/api;
-    docker push registry.heroku.app/$HEROKU_APP_API/web;
-    heroku container:release web --app $HEROKU_APP_API;
-    docker push $DOCKER_USERNAME/client;
-    docker push registry.heroku.app/$HEROKU_APP_CLIENT/web;
-    heroku container:release web --app $HEROKU_APP_CLIENT;
-    docker push $DOCKER_USERNAME/nginx;
-    docker push registry.heroku.app/$HEROKU_APP_NGINX/web;
-    heroku container:release web --app $HEROKU_APP_NGINX;
+    provider: script
+    script:
+        docker push $DOCKER_USERNAME/api;
+        docker push registry.heroku.app/$HEROKU_APP_API/web;
+        heroku container:release web --app $HEROKU_APP_API;
+        docker push $DOCKER_USERNAME/client;
+        docker push registry.heroku.app/$HEROKU_APP_CLIENT/web;
+        heroku container:release web --app $HEROKU_APP_CLIENT;
+        docker push $DOCKER_USERNAME/nginx;
+        docker push registry.heroku.app/$HEROKU_APP_NGINX/web;
+        heroku container:release web --app $HEROKU_APP_NGINX;
+    branch:
+        master

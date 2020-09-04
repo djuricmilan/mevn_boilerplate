@@ -10,22 +10,22 @@ before_install:
     - echo "$HEROKU_PASSWORD" | docker login -u "$HEROKU_USERNAME" --password-stdin registry.heroku.com
 script:
     - docker build -t $DOCKER_USERNAME/api -f ./api/Dockerfile.prod ./api;
-    - docker tag $DOCKER_USERNAME/api registry.heroku.app/$HEROKU_APP_API/web;
+    - docker tag $DOCKER_USERNAME/api registry.heroku.com/$HEROKU_APP_API/web;
     - docker build -t $DOCKER_USERNAME/client -f ./client/Dockerfile.prod ./client;
-    - docker tag $DOCKER_USERNAME/client registry.heroku.app/$HEROKU_APP_CLIENT/web;
+    - docker tag $DOCKER_USERNAME/client registry.heroku.com/$HEROKU_APP_CLIENT/web;
     - docker build -t $DOCKER_USERNAME/nginx -f ./nginx/prod/Dockerfile.prod ./nginx/prod;
-    - docker tag $DOCKER_USERNAME/nginx registry.heroku.app/$HEROKU_APP_NGINX/web;
+    - docker tag $DOCKER_USERNAME/nginx registry.heroku.com/$HEROKU_APP_NGINX/web;
 deploy:
     provider: script
     script:
         docker push $DOCKER_USERNAME/api;
-        docker push registry.heroku.app/$HEROKU_APP_API/web;
+        docker push registry.heroku.com/$HEROKU_APP_API/web;
         heroku container:release web --app $HEROKU_APP_API;
         docker push $DOCKER_USERNAME/client;
-        docker push registry.heroku.app/$HEROKU_APP_CLIENT/web;
+        docker push registry.heroku.com/$HEROKU_APP_CLIENT/web;
         heroku container:release web --app $HEROKU_APP_CLIENT;
         docker push $DOCKER_USERNAME/nginx;
-        docker push registry.heroku.app/$HEROKU_APP_NGINX/web;
+        docker push registry.heroku.com/$HEROKU_APP_NGINX/web;
         heroku container:release web --app $HEROKU_APP_NGINX;
     branch:
         master

@@ -16,8 +16,7 @@ services:
             context: ./api
             dockerfile: Dockerfile.dev
         volumes:
-            - /usr/app/node_modules
-            - ./api:/usr/app
+            - ./api/src:/usr/app/src
         environment:
             - ENV_TYPE=$ENV_TYPE
             - PORT=$API_PORT
@@ -32,8 +31,7 @@ services:
             context: ./client
             dockerfile: Dockerfile.dev
         volumes:
-            - /usr/app/node_modules
-            - ./client:/usr/app
+            - ./client/src:/usr/app/src
         environment:
             - VUE_APP_API_URL=http://localhost:$NGINX_PORT/api
             - PORT=$CLIENT_PORT
